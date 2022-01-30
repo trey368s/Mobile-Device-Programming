@@ -168,8 +168,8 @@ $12.99
 - iOrderDAO: Interface to persist Order data.
 
 ## Scrum
-UI specialist: Bangyan Ju,Cepada Morgan
-Product Owner:Trey Stegeman
-Integration Specialist:Marco Bahns,Jeremy Shepherd
+- UI specialist: Bangyan Ju,Cepada Morgan
+- Product Owner:Trey Stegeman
+- Integration Specialist:Marco Bahns,Jeremy Shepherd
 ## Teams Link
 https://teams.microsoft.com/l/meetup-join/19%3ameeting_ZDBhOTlkYTUtMDk5My00MmEzLWE3NTItOWU2YmIzY2VlNjk0%40thread.v2/0?context=%7b%22Tid%22%3a%22f5222e6c-5fc6-48eb-8f03-73db18203b63%22%2c%22Oid%22%3a%224e8ab8be-5ad6-4e0a-b7bd-90ed20a1675b%22%7d
