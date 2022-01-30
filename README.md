@@ -5,6 +5,8 @@ Our team has decided to create a mobile version of a fast food application. This
 ![0T}HL9OU)7R}70TNLDFJXQH](https://user-images.githubusercontent.com/81964248/151697018-57566267-ea92-43f1-af54-3393045b6eb4.png)
 ![}}DI%`OX{3M_%%HOQ8IDX@J](https://user-images.githubusercontent.com/81964248/151697025-2bd7d9ff-d19d-4767-8551-40949b4676a4.png)
 ![TQR377(5VDA%4NGV__32SM6](https://user-images.githubusercontent.com/81964248/151697029-3813d2ca-cd32-4256-a9e8-2228a0aa63db.png)
+![36QWMV25YY~`4ECAZ)17%BK](https://user-images.githubusercontent.com/81964248/151697055-d923328a-0ff2-4ba6-ad40-0511188ebd0b.png)
+
 
 ## Scrum
 Scrum Master- Bangyan Ju  
