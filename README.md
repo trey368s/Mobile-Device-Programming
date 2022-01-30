@@ -153,6 +153,9 @@ $9.99
 Beef and sauerkraut with grilled Swiss cheese on rye bread
 
 $12.99
+## Class Diagram
+![image](https://user-images.githubusercontent.com/81964248/151712773-f30cdd04-1af2-4608-be99-ed6e0c56386f.png)
+## Class Diagram Description
 
 ## Scrum
 Scrum Master- Bangyan Ju  
