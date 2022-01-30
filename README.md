@@ -156,6 +156,16 @@ $12.99
 ## Class Diagram
 ![image](https://user-images.githubusercontent.com/81964248/151712773-f30cdd04-1af2-4608-be99-ed6e0c56386f.png)
 ## Class Diagram Description
+MainActivity: First screen the users sees. It shows options to start an order, browse the menu, access profile, and past orders if applicable. 
+CustomerDetailsActivity: Profile page for Customer.
+ProductDetailActivity: Details page for each product on offer.
+OrderDetailActivty: Details page for the current order.
+Customer: Noun class that represents a Customer.
+Product: Noun class that represents a Product.
+Order: Noun class that represents an Order.
+ICustomerDAO: Interface to persist Customer data.
+IProductDAO: Interface to persist Product data.
+IOrderDAO: Interface to persist Order data.
 
 ## Scrum
 Scrum Master- Bangyan Ju  
