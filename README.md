@@ -18,7 +18,6 @@ As a customer, I want to be able to quickly search the menu for particular items
 ### Example 1
 **Given** that the app is online, the restaurant is open, and no menu items are out of stock
 
-## Scrum
 **When** I search for “hamburgers”
 
 **Then** I should see all menu items categorized as hamburgers:
