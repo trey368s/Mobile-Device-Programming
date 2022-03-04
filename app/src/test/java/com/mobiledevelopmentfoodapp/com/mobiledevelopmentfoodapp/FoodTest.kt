@@ -5,7 +5,7 @@ import org.junit.Test
 
 class FoodTest {
     @Test
-    fun addition_isCorrect() {
+    fun `addition is correct`() {
         Assert.assertEquals(4, 2 + 2)
     }
 }
