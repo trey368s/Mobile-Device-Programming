@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mobiledevelopmentfoodapp.ui.theme.FoodAppTheme
@@ -79,7 +78,7 @@ fun ButtonBar() {
 @Composable
 fun Menu() {
     val items = listOf("A", "B", "C", "D", "E", "F")
-    var countryName : String by remember { mutableStateOf("Menu Categories") }
+    var menuName : String by remember { mutableStateOf("Menu Categories") }
     var expanded by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -93,7 +92,7 @@ fun Menu() {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text= countryName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
+            Text(text= menuName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
             Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "")
             DropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
                 items.forEachIndexed {
