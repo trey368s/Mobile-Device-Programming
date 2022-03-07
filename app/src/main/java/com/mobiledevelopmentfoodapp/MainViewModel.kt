@@ -13,6 +13,7 @@ class MainViewModel : ViewModel() {
     var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
     var RestaurantService : RestaurantService = RestaurantService()
 
+    // sets innerRestaurant value to list of restaurants
     fun fetchRestaurants() {
         viewModelScope.launch {
             var innerRestaurant = RestaurantService.fetchFoods()
