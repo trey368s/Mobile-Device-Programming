@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
             FoodAppTheme {
                 Box (modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)) {
+                    .background(Color.Blue)) {
                     // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
