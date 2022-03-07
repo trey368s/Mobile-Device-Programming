@@ -11,12 +11,12 @@ import kotlinx.coroutines.launch
 class MainViewModel : ViewModel() {
 
     var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
-    var RestaurantService : RestaurantService = RestaurantService()
+    var restaurantService : RestaurantService = RestaurantService()
 
     // sets innerRestaurant value to list of restaurants
     fun fetchRestaurants() {
         viewModelScope.launch {
-            var innerRestaurant = RestaurantService.fetchFoods()
+            var innerRestaurant = restaurantService.fetchFoods()
             restaurant.postValue(innerRestaurant)
         }
     }
