@@ -79,7 +79,7 @@ fun ButtonBar() {
 @Composable
 fun Menu() {
     val items = listOf("A", "B", "C", "D", "E", "F")
-    val categoryName : String by remember { mutableStateOf("Menu Categories") }
+    var categoryName : String by remember { mutableStateOf("Menu Categories") }
     var expanded by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
