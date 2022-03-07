@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 
 class RestaurantService {
+    // Fetch List of foods from datahub
     suspend fun fetchFoods(): List<Food>?{
         return withContext(Dispatchers.IO){
             val service = RetrofitClientInstance.retrofitInstance?.create(IFoodDAO::class.java)

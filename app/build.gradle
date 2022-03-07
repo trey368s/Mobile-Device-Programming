@@ -71,7 +71,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
     implementation "androidx.compose.material3:material3:1.0.0-alpha02"
-    //Android room
-    //implementation("androidx.room:room-runtime:$roomVersion")
-    //annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    // Android room
+    // implementation("androidx.room:room-runtime:$roomVersion")
+    // annotationProcessor("androidx.room:room-compiler:$roomVersion")
 }
