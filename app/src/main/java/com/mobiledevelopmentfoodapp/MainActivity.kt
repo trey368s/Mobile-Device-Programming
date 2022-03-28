@@ -54,6 +54,10 @@ fun Header(name: String) {
 
 @Composable
 fun ButtonBar() {
+    var cartPopupVisibility by remember{mutableStateOf(false)}
+    //following line of code should be replaced with list of items the user has added to their cart
+    var myCart = listOf("Item1", "Item2", "Item3")
+
     Row(modifier = Modifier.padding(all = 2.dp)) {
     }
 
@@ -64,6 +68,7 @@ fun ButtonBar() {
     ) {
         Button(
             onClick = {
+                cartPopupVisibility = !cartPopupVisibility
                 Toast.makeText(context, "TAKES USER TO CART PAGE", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.padding(all = 55.dp),
@@ -73,13 +78,16 @@ fun ButtonBar() {
         ) {
             Text(text = "View Cart", color = Color.White)
         }
+        if(cartPopupVisibility){
+            cartPopupDialog(myCart)
+        }
     }
 }
 
 @Composable
 fun Menu() {
     val items = listOf("A", "B", "C", "D", "E", "F")
-    var countryName : String by remember { mutableStateOf("Menu Categories") }
+    var menuName : String by remember { mutableStateOf("Menu Categories") }
     var expanded by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -93,7 +101,7 @@ fun Menu() {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text= countryName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
+            Text(text= menuName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
             Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "")
             DropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
                 items.forEachIndexed {
@@ -101,7 +109,7 @@ fun Menu() {
                     expanded = false
 
                 }) {
-                    Text(text = "Food Category")
+                    Text(text = s)
                 }
                 }
             }
