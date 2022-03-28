@@ -54,6 +54,10 @@ fun Header(name: String) {
 
 @Composable
 fun ButtonBar() {
+    var cartPopupVisibility by remember{mutableStateOf(false)}
+    //following line of code should be replaced with list of items the user has added to their cart
+    var myCart = listOf("Item1", "Item2", "Item3")
+
     Row(modifier = Modifier.padding(all = 2.dp)) {
     }
 
@@ -64,6 +68,7 @@ fun ButtonBar() {
     ) {
         Button(
             onClick = {
+                cartPopupVisibility = !cartPopupVisibility
                 Toast.makeText(context, "TAKES USER TO CART PAGE", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.padding(all = 55.dp),
@@ -72,6 +77,9 @@ fun ButtonBar() {
             shape = MaterialTheme.shapes.medium,
         ) {
             Text(text = "View Cart", color = Color.White)
+        }
+        if(cartPopupVisibility){
+            cartPopupDialog(myCart)
         }
     }
 }
