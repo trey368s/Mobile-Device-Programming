@@ -101,7 +101,7 @@ fun Menu() {
                     expanded = false
 
                 }) {
-                    Text(text = "Food Category")
+                    Text(text = s)
                 }
                 }
             }
