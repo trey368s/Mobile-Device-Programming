@@ -83,6 +83,31 @@ fun ButtonBar() {
 }
 
 @Composable
+fun CheckoutButton() {
+    Row(modifier = Modifier.padding(all = 2.dp)) {
+    }
+
+    val context = LocalContext.current
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Button(
+            onClick = {
+                Toast.makeText(context, "Process the users order", Toast.LENGTH_LONG)
+                    .show()
+            },
+            modifier = Modifier.padding(all = 55.dp),
+            enabled = true,
+            border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Text(text = "Checkout", color = Color.White)
+        }
+    }
+}
+
+@Composable
 fun BackButton() {
     Row(modifier = Modifier.padding(all = 2.dp)) {
     }
@@ -94,7 +119,7 @@ fun BackButton() {
     ) {
         Button(
             onClick = {
-                Toast.makeText(context, "TAKES USER Back to previous page", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "TAKES the USER Back to previous page", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.padding(all = 55.dp),
             enabled = true,
