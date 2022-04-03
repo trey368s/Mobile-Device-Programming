@@ -76,6 +76,30 @@ fun ButtonBar() {
 }
 
 @Composable
+fun BackButton() {
+    Row(modifier = Modifier.padding(all = 2.dp)) {
+    }
+
+    val context = LocalContext.current
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Button(
+            onClick = {
+                Toast.makeText(context, "TAKES USER Back to previous page", Toast.LENGTH_LONG).show()
+            },
+            modifier = Modifier.padding(all = 55.dp),
+            enabled = true,
+            border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Text(text = "Back", color = Color.White)
+        }
+    }
+}
+
+@Composable
 fun Menu() {
     val items = listOf("A", "B", "C", "D", "E", "F")
     val categoryName : String by remember { mutableStateOf("Menu Categories") }
