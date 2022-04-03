@@ -84,7 +84,7 @@ fun ButtonBar() {
 
 @Composable
 fun Menu() {
-    val items = listOf("A", "B", "C", "D", "E", "F")
+    val items = listOf("A", "B", "C", "D", "E", "F",)
     var countryName : String by remember { mutableStateOf("Menu Categories") }
     var expanded by remember { mutableStateOf(false) }
 
