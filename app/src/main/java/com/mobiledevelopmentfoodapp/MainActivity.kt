@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
             FoodAppTheme {
                 Box (modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)) {
+                    .background(Color.Blue)) {
                     // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
@@ -85,7 +85,7 @@ fun ButtonBar() {
 @Composable
 fun Menu() {
     val items = listOf("A", "B", "C", "D", "E", "F")
-    var countryName : String by remember { mutableStateOf("Menu Categories") }
+    var categoryName : String by remember { mutableStateOf("Menu Categories") }
     var expanded by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -99,7 +99,7 @@ fun Menu() {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text= countryName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
+            Text(text= categoryName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
             Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "")
             DropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
                 items.forEachIndexed {
