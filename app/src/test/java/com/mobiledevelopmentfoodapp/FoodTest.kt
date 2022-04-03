@@ -1,4 +1,4 @@
-package com.mobiledevelopmentfoodapp.com.mobiledevelopmentfoodapp
+package com.mobiledevelopmentfoodapp
 
 import org.junit.Assert
 import org.junit.Test
