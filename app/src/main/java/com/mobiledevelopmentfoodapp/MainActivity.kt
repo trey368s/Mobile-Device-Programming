@@ -22,12 +22,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
+import com.mobiledevelopmentfoodapp.dto.Food
 import com.mobiledevelopmentfoodapp.ui.theme.FoodAppTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel : MainViewModel by viewModel()
+
+    var FoodItems: MutableLiveData<Food> = MutableLiveData<Food>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +52,15 @@ class MainActivity : ComponentActivity() {
                     ButtonBar()
                     Menu()
                     FoodList()
+                    CheckoutButton()
                 }
             }
         }
     }
+}
+
+class FirebaseFirestore {
+
 }
 
 @Composable
@@ -91,7 +100,7 @@ fun CheckoutButton() {
     val context = LocalContext.current
     Box(
         Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        contentAlignment = Alignment.BottomCenter
     ) {
         Button(
             onClick = {
@@ -103,7 +112,7 @@ fun CheckoutButton() {
             border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
             shape = MaterialTheme.shapes.medium,
         ) {
-            Text(text = "Checkout", color = Color.White)
+            Text(text = "Submit Order", color = Color.White)
         }
     }
 }
