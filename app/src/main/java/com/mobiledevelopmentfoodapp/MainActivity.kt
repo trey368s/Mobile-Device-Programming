@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
                     }
                     ButtonBar()
                     Menu()
+                    FoodList()
                 }
             }
         }
@@ -162,6 +163,22 @@ fun Menu() {
             }
         }
     }
+}
+
+@Composable
+fun FoodList(){
+    Row{
+        Column() {
+            
+        }
+        Column() {
+            
+        }
+        Column() {
+            
+        }
+    }
+
 }
 
 @Preview(showBackground = true)
