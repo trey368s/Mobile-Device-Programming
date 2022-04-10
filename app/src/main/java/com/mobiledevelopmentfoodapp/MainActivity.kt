@@ -120,10 +120,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-class FirebaseFirestore {
-
-}
-
 @Composable
 fun Header(name: String) {
     Text(text = "Fastfood App", fontSize = 30.sp, textAlign = TextAlign.Center)
