@@ -13,6 +13,8 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
 
     var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
 
+    private lateinit var firestore: FirebaseFirestore
+
     fun fetchRestaurants() {
         viewModelScope.launch {
             var innerRestaurant = RestaurantService.fetchFoods()
