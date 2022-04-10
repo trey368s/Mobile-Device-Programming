@@ -1,6 +1,8 @@
 package com.mobiledevelopmentfoodapp
 
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,9 +25,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.mobiledevelopmentfoodapp.dto.Food
 import com.mobiledevelopmentfoodapp.ui.theme.FoodAppTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
+private var user: FirebaseUser? = null
 
 class MainActivity : ComponentActivity() {
 
@@ -53,8 +62,59 @@ class MainActivity : ComponentActivity() {
                     Menu()
                     FoodList()
                     CheckoutButton()
+                    LoginButton()
                 }
             }
+        }
+    }
+//Temporary Login button for validating functionality
+    @Composable
+    fun LoginButton() {
+        Row(modifier = Modifier.padding(all = 2.dp)) {
+        }
+
+        val context = LocalContext.current
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Button(
+                onClick = {
+                    signIn()
+                },
+                modifier = Modifier.padding(all = 55.dp),
+                enabled = true,
+                border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
+                shape = MaterialTheme.shapes.medium,
+            ) {
+                Text(text = "Login", color = Color.Blue)
+            }
+        }
+    }
+
+    private fun signIn() {
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build()
+        )
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .build()
+        signInLauncher.launch(signInIntent)
+    }
+
+    private val signInLauncher = registerForActivityResult (
+        FirebaseAuthUIActivityResultContract()
+    ) {
+            res -> this.signInResult(res)
+    }
+
+    private fun signInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
+        if (result.resultCode == RESULT_OK) {
+            user = FirebaseAuth.getInstance().currentUser
+        } else {
+            Log.e("MainActivity.kt", "Login Error: " + response?.error?.errorCode)
         }
     }
 }
