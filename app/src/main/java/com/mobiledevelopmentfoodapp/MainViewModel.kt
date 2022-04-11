@@ -1,43 +1,40 @@
 
 package com.mobiledevelopmentfoodapp
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobiledevelopmentfoodapp.dto.Food
-import com.mobiledevelopmentfoodapp.service.RestaurantService
-import kotlinx.coroutines.launch
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.mobiledevelopmentfoodapp.dto.Food
+import com.mobiledevelopmentfoodapp.dto.Order
+import com.mobiledevelopmentfoodapp.service.IRestaurantService
+import com.mobiledevelopmentfoodapp.service.RestaurantService
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+
+class MainViewModel (var RestaurantService : IRestaurantService = RestaurantService()): ViewModel() {
 
     var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
-    var RestaurantService : RestaurantService = RestaurantService()
 
     private lateinit var firestore : FirebaseFirestore
-
     init {
-        firestore = FirebaseFirestore.getInstance()
-        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+        firestore=FirebaseFirestore.getInstance()
+        firestore.firestoreSettings= FirebaseFirestoreSettings.Builder().build()
     }
 
     fun fetchRestaurants() {
         viewModelScope.launch {
             var innerRestaurant = RestaurantService.fetchFoods()
             restaurant.postValue(innerRestaurant)
-            var foodList = firestore.collection("FoodItems")
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        Log.d(TAG, "DocumentSnapshot data: ${document.id} => ${document.data}")
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents: ", exception)
-                }
         }
+    }
+    fun save(order: Order){
+        val document = firestore.collection("Order").document()
+        order.orderId = document.id
+        val handle = document.set(order)
+        handle.addOnSuccessListener { Log.d("Firebase","Document saved") }
+        handle.addOnFailureListener { Log.e("Firebase","Save failed $it") }
     }
 }

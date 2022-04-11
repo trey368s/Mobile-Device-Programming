@@ -59,9 +59,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-class FirebaseFirestore {
+//class FirebaseFirestore {
 
-}
+//}
 
 @Composable
 fun Header(name: String) {
