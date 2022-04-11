@@ -143,7 +143,7 @@ fun BackButton() {
 
 @Composable
 fun Menu() {
-    val items = listOf("A", "B", "C", "D", "E", "F")
+    val items = listOf("Breakfast", "Lunch", "Dinner")
     val categoryName : String by remember { mutableStateOf("Menu Categories") }
     var expanded by remember { mutableStateOf(false) }
 
@@ -166,7 +166,7 @@ fun Menu() {
                     expanded = false
 
                 }) {
-                    Text(text = "Food Category")
+                    Text(text = s)
                 }
                 }
             }
