@@ -17,11 +17,31 @@ import kotlinx.coroutines.launch
 class MainViewModel (var RestaurantService : IRestaurantService = RestaurantService()): ViewModel() {
 
     var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
+    var food : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
 
     private lateinit var firestore : FirebaseFirestore
     init {
         firestore=FirebaseFirestore.getInstance()
         firestore.firestoreSettings= FirebaseFirestoreSettings.Builder().build()
+        listentoFood()
+    }
+
+    private fun listentoFood() {
+        firestore.collection("Food").addSnapshotListener {
+                snapshot, e ->
+                if (e!=null){
+                    Log.w("Listen failed",e)
+                    return@addSnapshotListener
+                }
+            snapshot?.let {
+                val allFoods = ArrayList<Food>()
+                val documents = snapshot.documents
+                documents.forEach{
+                    val food = it.toObject(Food::class.java)
+                    food?.let { allFoods.add(it) }
+                }
+            }
+        }
     }
 
     fun fetchRestaurants() {

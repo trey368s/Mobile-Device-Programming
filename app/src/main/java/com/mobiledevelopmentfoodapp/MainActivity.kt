@@ -27,6 +27,7 @@ import com.mobiledevelopmentfoodapp.dto.Food
 import com.mobiledevelopmentfoodapp.ui.theme.FoodAppTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MainActivity : ComponentActivity() {
 
     private val viewModel : MainViewModel by viewModel()
@@ -35,9 +36,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_cart)
         setContent {
             viewModel.fetchRestaurants()
             val restaurants by viewModel.restaurant.observeAsState(initial= emptyList())
+            val foods = ArrayList<Food>()
+            foods.add(Food(name="Burger", description = "Fried Chicken and bread", price = 10))
+            foods.add(Food(name="Cola", description = "Drink", price = 5))
+            foods.add(Food(name="Pizza", description = "Cheese", price = 10))
             FoodAppTheme {
                 Box (modifier = Modifier
                     .fillMaxSize()
@@ -49,9 +55,11 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Header("Android")
                     }
-                    ButtonBar()
+
                     Menu()
-                    FoodList()
+                    ButtonBar_addburger()
+                    ButtonBar_addCola()
+                    ButtonBar_addPizza()
                     CheckoutButton()
                 }
             }
@@ -59,9 +67,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//class FirebaseFirestore {
 
-//}
 
 @Composable
 fun Header(name: String) {
@@ -69,7 +75,30 @@ fun Header(name: String) {
 }
 
 @Composable
-fun ButtonBar() {
+fun ButtonBar_addburger() {
+    Row(modifier = Modifier.padding(all = 2.dp)) {
+    }
+
+    val context = LocalContext.current
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopStart
+    ) {
+        Button(
+            onClick = {
+                Toast.makeText(context, "You successfully ordered a burger!", Toast.LENGTH_LONG).show()
+            },
+            modifier = Modifier.padding(all = 55.dp),
+            enabled = true,
+            border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Text(text = "add burger", color = Color.White)
+        }
+    }
+}
+@Composable
+fun ButtonBar_addCola() {
     Row(modifier = Modifier.padding(all = 2.dp)) {
     }
 
@@ -80,14 +109,37 @@ fun ButtonBar() {
     ) {
         Button(
             onClick = {
-                Toast.makeText(context, "TAKES USER TO CART PAGE", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "You successfully ordered a cola!", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.padding(all = 55.dp),
             enabled = true,
             border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
             shape = MaterialTheme.shapes.medium,
         ) {
-            Text(text = "View Cart", color = Color.White)
+            Text(text = "add Cola", color = Color.White)
+        }
+    }
+}
+@Composable
+fun ButtonBar_addPizza() {
+    Row(modifier = Modifier.padding(all = 2.dp)) {
+    }
+
+    val context = LocalContext.current
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopEnd
+    ) {
+        Button(
+            onClick = {
+                Toast.makeText(context, "You successfully ordered a Pizza!", Toast.LENGTH_LONG).show()
+            },
+            modifier = Modifier.padding(all = 55.dp),
+            enabled = true,
+            border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Text(text = "add Pizza", color = Color.White)
         }
     }
 }
@@ -104,7 +156,7 @@ fun CheckoutButton() {
     ) {
         Button(
             onClick = {
-                Toast.makeText(context, "Process the users order", Toast.LENGTH_LONG)
+                Toast.makeText(context, "User payment", Toast.LENGTH_LONG)
                     .show()
             },
             modifier = Modifier.padding(all = 55.dp),
@@ -112,10 +164,11 @@ fun CheckoutButton() {
             border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
             shape = MaterialTheme.shapes.medium,
         ) {
-            Text(text = "Submit Order", color = Color.White)
+            Text(text = "Payent", color = Color.White)
         }
     }
 }
+
 
 @Composable
 fun BackButton() {
@@ -173,6 +226,8 @@ fun Menu() {
         }
     }
 }
+
+
 
 @Composable
 fun FoodList(){
