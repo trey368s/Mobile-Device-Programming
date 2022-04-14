@@ -50,11 +50,11 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
             restaurant.postValue(innerRestaurant)
         }
     }
-    fun save(order: Order){
-        val document = firestore.collection("Order").document()
-        order.orderId = document.id
-        val handle = document.set(order)
+    fun save(food: Food){
+       val document = firestore.collection("Food").document()
+       food.Id = document.id
+        val handle = document.set(food)
         handle.addOnSuccessListener { Log.d("Firebase","Document saved") }
-        handle.addOnFailureListener { Log.e("Firebase","Save failed $it") }
+       handle.addOnFailureListener { Log.e("Firebase","Save failed $it") }
     }
 }

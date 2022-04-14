@@ -41,9 +41,9 @@ class MainActivity : ComponentActivity() {
             viewModel.fetchRestaurants()
             val restaurants by viewModel.restaurant.observeAsState(initial= emptyList())
             val foods = ArrayList<Food>()
-            foods.add(Food(name="Burger", description = "Fried Chicken and bread", price = 10))
-            foods.add(Food(name="Cola", description = "Drink", price = 5))
-            foods.add(Food(name="Pizza", description = "Cheese", price = 10))
+            //foods.add(Food(name="Burger", description = "Fried Chicken and bread", price = 10))
+            //foods.add(Food(name="Cola", description = "Drink", price = 5))
+            //foods.add(Food(name="Pizza", description = "Cheese", price = 10))
             FoodAppTheme {
                 Box (modifier = Modifier
                     .fillMaxSize()
@@ -76,6 +76,8 @@ fun Header(name: String) {
 
 @Composable
 fun ButtonBar_addburger() {
+   val viewModel = MainViewModel()
+
     Row(modifier = Modifier.padding(all = 2.dp)) {
     }
 
@@ -86,7 +88,9 @@ fun ButtonBar_addburger() {
     ) {
         Button(
             onClick = {
+               var food = Food(name="Burger", description = "Fried Chicken and bread", price = 10, Id = "000")
                 Toast.makeText(context, "You successfully ordered a burger!", Toast.LENGTH_LONG).show()
+                viewModel.save(food)
             },
             modifier = Modifier.padding(all = 55.dp),
             enabled = true,
@@ -109,6 +113,7 @@ fun ButtonBar_addCola() {
     ) {
         Button(
             onClick = {
+
                 Toast.makeText(context, "You successfully ordered a cola!", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.padding(all = 55.dp),
