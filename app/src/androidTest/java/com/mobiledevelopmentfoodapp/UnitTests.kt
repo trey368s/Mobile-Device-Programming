@@ -11,12 +11,6 @@ import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.koin.core.KoinApplication.Companion.init
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-
 @RunWith(AndroidJUnit4::class)
 class UnitTests {
     var food: MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
@@ -47,6 +41,12 @@ class UnitTests {
             connected = true
         }
         assertEquals(connected, true)
+    }
+
+    @Test
+    fun addFood(){
+        val foods = ArrayList<Food>()
+        foods.add(Food(name="Burger", description = "Fried Chicken and bread", price = 10, Id="1"))
     }
 }
 
