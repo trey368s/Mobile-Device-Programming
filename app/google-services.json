@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "801859412399",
+    "project_id": "fatfood-restaurant",
+    "storage_bucket": "fatfood-restaurant.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801859412399:android:3e5930fad4593c0e3a8f5a",
+        "android_client_info": {
+          "package_name": "com.mobiledevelopmentfoodapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "801859412399-q0r7ghe18f1puuavboobqerq2t3kaabv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobiledevelopmentfoodapp",
+            "certificate_hash": "aa775fbfbecc71dc43a930bb73dee6706813ca11"
+          }
+        },
+        {
+          "client_id": "801859412399-7rqplf2ca7f1gfai9aos2k73bbukn4a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEhTVOia1np7Qb8z0J2rddBhoA0uoQlJY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "801859412399-7rqplf2ca7f1gfai9aos2k73bbukn4a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
