@@ -228,24 +228,6 @@ fun Menu() {
     }
 }
 
-
-
-@Composable
-fun FoodList(){
-    Row{
-        Column() {
-            
-        }
-        Column() {
-            
-        }
-        Column() {
-            
-        }
-    }
-
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
