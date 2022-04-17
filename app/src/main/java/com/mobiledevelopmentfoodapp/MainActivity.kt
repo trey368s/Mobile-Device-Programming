@@ -41,9 +41,6 @@ class MainActivity : ComponentActivity() {
             viewModel.fetchRestaurants()
             val restaurants by viewModel.restaurant.observeAsState(initial= emptyList())
             val foods = ArrayList<Food>()
-            //foods.add(Food(name="Burger", description = "Fried Chicken and bread", price = 10))
-            //foods.add(Food(name="Cola", description = "Drink", price = 5))
-            //foods.add(Food(name="Pizza", description = "Cheese", price = 10))
             FoodAppTheme {
                 Box (modifier = Modifier
                     .fillMaxSize()
@@ -113,7 +110,6 @@ fun ButtonBar_addCola() {
     ) {
         Button(
             onClick = {
-
                 Toast.makeText(context, "You successfully ordered a cola!", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.padding(all = 55.dp),
