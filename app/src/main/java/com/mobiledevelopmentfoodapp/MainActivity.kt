@@ -100,6 +100,7 @@ fun ButtonBar_addburger() {
 }
 @Composable
 fun ButtonBar_addCola() {
+    val viewModel = MainViewModel()
     Row(modifier = Modifier.padding(all = 2.dp)) {
     }
 
@@ -110,8 +111,10 @@ fun ButtonBar_addCola() {
     ) {
         Button(
             onClick = {
+                var food = Food(name="Cola", description = "Cola with ice", price = 2, Id = "001")
                 Toast.makeText(context, "You successfully ordered a cola!", Toast.LENGTH_LONG).show()
-            },
+                viewModel.save(food)
+                      },
             modifier = Modifier.padding(all = 55.dp),
             enabled = true,
             border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
