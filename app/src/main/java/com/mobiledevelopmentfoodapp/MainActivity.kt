@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colors.background
                     ) {
-                        Header("Android")
+                        Header()
                     }
 
                     Menu()
@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun Header(name: String) {
+fun Header() {
     Text(text = "Fastfood App", fontSize = 30.sp, textAlign = TextAlign.Center)
 }
 
@@ -201,7 +201,7 @@ fun BackButton() {
 @Composable
 fun Menu() {
     val items = listOf("Breakfast", "Lunch", "Dinner")
-    val categoryName : String by remember { mutableStateOf("Menu Categories") }
+    val restaurantName : String by remember { mutableStateOf("Menu Categories") }
     var expanded by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -215,7 +215,7 @@ fun Menu() {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text= categoryName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
+            Text(text= restaurantName, fontSize = 18.sp, modifier = Modifier.padding(end = 8.dp))
             Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "")
             DropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
                 items.forEachIndexed {
@@ -235,6 +235,6 @@ fun Menu() {
 @Composable
 fun DefaultPreview() {
     FoodAppTheme {
-        Header("Android")
+        Header()
     }
 }
