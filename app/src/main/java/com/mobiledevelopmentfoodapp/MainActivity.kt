@@ -202,6 +202,7 @@ fun BackButton() {
 fun Menu() {
     val items = listOf("Breakfast", "Lunch", "Dinner")
     val restaurantName : String by remember { mutableStateOf("Menu Categories") }
+
     var expanded by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {

@@ -13,7 +13,6 @@ import com.mobiledevelopmentfoodapp.service.IRestaurantService
 import com.mobiledevelopmentfoodapp.service.RestaurantService
 import kotlinx.coroutines.launch
 
-
 class MainViewModel (var RestaurantService : IRestaurantService = RestaurantService()): ViewModel() {
 
 
