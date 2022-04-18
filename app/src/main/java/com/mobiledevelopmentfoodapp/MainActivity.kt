@@ -85,7 +85,7 @@ fun ButtonBar_addburger() {
     ) {
         Button(
             onClick = {
-               var food = Food(name="Burger", description = "Fried Chicken and bread", price = 10, Id = "000")
+               var food = Food(name="Burger", description = "Fried Chicken and bread", price = 10.0, productId = "000")
                 Toast.makeText(context, "You successfully ordered a burger!", Toast.LENGTH_LONG).show()
                 viewModel.save(food)
             },
@@ -111,7 +111,7 @@ fun ButtonBar_addCola() {
     ) {
         Button(
             onClick = {
-                var food = Food(name="Cola", description = "Cola with ice", price = 2, Id = "001")
+                var food = Food(name="Cola", description = "Cola with ice", price = 2.0, productId = "001")
                 Toast.makeText(context, "You successfully ordered a cola!", Toast.LENGTH_LONG).show()
                 viewModel.save(food)
                       },

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.mobiledevelopmentfoodapp.dto.Food
-import com.mobiledevelopmentfoodapp.dto.Order
 import com.mobiledevelopmentfoodapp.service.IRestaurantService
 import com.mobiledevelopmentfoodapp.service.RestaurantService
 import kotlinx.coroutines.launch
@@ -16,7 +15,7 @@ import kotlinx.coroutines.launch
 class MainViewModel (var RestaurantService : IRestaurantService = RestaurantService()): ViewModel() {
 
 
-    private var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
+    var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
     var restaurantService : RestaurantService = RestaurantService()
 
     private lateinit var firestore : FirebaseFirestore
@@ -52,7 +51,7 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
     }
     fun save(food: Food){
         val document = firestore.collection("Food").document()
-        food.Id = document.id
+        food.productId = document.id
         val handle = document.set(food)
         handle.addOnSuccessListener { Log.d("Firebase","Document saved") }
         handle.addOnFailureListener { Log.e("Firebase","Save failed $it") }
