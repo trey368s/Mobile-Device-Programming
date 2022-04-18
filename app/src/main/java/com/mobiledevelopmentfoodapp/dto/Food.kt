@@ -2,7 +2,6 @@ package com.mobiledevelopmentfoodapp.dto
 
 //import androidx.room.Entity
 //import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 data class Food(var name: String,
                 var description: String,
