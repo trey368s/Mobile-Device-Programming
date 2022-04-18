@@ -168,7 +168,7 @@ fun CheckoutButton() {
             border = BorderStroke(width = 1.dp, brush = SolidColor(Color.Blue)),
             shape = MaterialTheme.shapes.medium,
         ) {
-            Text(text = "Payent", color = Color.White)
+            Text(text = "Payment", color = Color.White)
         }
     }
 }

@@ -8,6 +8,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 
+interface IRestaurantService {
+    suspend fun fetchFoods(): List<Food>?
+}
+
 class RestaurantService : IRestaurantService {
     override suspend fun fetchFoods(): List<Food>?{
         return withContext(Dispatchers.IO){

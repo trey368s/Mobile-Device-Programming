@@ -9,7 +9,6 @@ import com.mobiledevelopmentfoodapp.dto.Food
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Assert.*
-import org.koin.core.KoinApplication.Companion.init
 
 @RunWith(AndroidJUnit4::class)
 class UnitTests {
