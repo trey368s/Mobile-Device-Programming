@@ -16,8 +16,9 @@ import kotlinx.coroutines.launch
 
 class MainViewModel (var RestaurantService : IRestaurantService = RestaurantService()): ViewModel() {
 
-    var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
-    var food : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
+
+    private var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
+    var restaurantService : RestaurantService = RestaurantService()
 
     private lateinit var firestore : FirebaseFirestore
     init {
@@ -46,7 +47,7 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
 
     fun fetchRestaurants() {
         viewModelScope.launch {
-            var innerRestaurant = RestaurantService.fetchFoods()
+            var innerRestaurant = restaurantService.fetchFoods()
             restaurant.postValue(innerRestaurant)
         }
     }

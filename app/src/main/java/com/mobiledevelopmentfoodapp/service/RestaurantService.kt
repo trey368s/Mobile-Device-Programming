@@ -12,9 +12,8 @@ class RestaurantService {
     suspend fun fetchFoods(): List<Food>? {
         return withContext(Dispatchers.IO) {
             val service = RetrofitClientInstance.retrofitInstance?.create(IFoodDAO::class.java)
-            val foods = async {service?.getAllFoods()}
-            var result =foods.await()?.awaitResponse()?.body()
-            return@withContext result
+            val foods = async { service?.getAllFoods() }
+            return@withContext foods.await()?.awaitResponse()?.body()
         }
     }
 }
