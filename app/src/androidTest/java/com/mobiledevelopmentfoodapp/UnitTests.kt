@@ -45,7 +45,7 @@ class UnitTests {
     @Test
     fun addFood(){
         val foods = ArrayList<Food>()
-        foods.add(Food(name="Burger", description = "Fried Chicken and bread", price = 10, Id="1"))
+        foods.add(Food(name="Burger", description = "Fried Chicken and bread", price = 10.0))
     }
 }
 
