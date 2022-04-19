@@ -126,6 +126,7 @@ fun ButtonBar_addCola() {
 }
 @Composable
 fun ButtonBar_addPizza() {
+    val viewModel = MainViewModel()
     Row(modifier = Modifier.padding(all = 2.dp)) {
     }
 
@@ -136,6 +137,8 @@ fun ButtonBar_addPizza() {
     ) {
         Button(
             onClick = {
+                var food = Food(name="Pizza", description = "Large pepperoni pizza", price = 2.0, productId = "002")
+                viewModel.save(food)
                 Toast.makeText(context, "You successfully ordered a Pizza!", Toast.LENGTH_LONG).show()
             },
             modifier = Modifier.padding(all = 55.dp),
