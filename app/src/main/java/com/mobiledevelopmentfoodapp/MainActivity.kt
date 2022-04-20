@@ -137,7 +137,7 @@ fun ButtonBar_addPizza() {
     ) {
         Button(
             onClick = {
-                var food = Food(name="Pizza", description = "Large pepperoni pizza", price = 2.0, productId = "002")
+                var food = Food(name="Pizza", description = "Large pepperoni pizza", price = 18.0, productId = "002")
                 viewModel.save(food)
                 Toast.makeText(context, "You successfully ordered a Pizza!", Toast.LENGTH_LONG).show()
             },
