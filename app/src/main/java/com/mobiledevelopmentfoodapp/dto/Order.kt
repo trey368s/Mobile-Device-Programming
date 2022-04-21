@@ -4,7 +4,7 @@ package com.mobiledevelopmentfoodapp.dto
 //import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-data class Order(var customerId: Int,
+data class Order(var customerId: String,
                  var name: String,
                  var products: ArrayList<Food>,
                  var totalPrice: Double,

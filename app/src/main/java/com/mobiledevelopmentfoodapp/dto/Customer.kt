@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Customer(var name: String,
                     var phone: String,
-                    @SerializedName("id") var customerId:Int = 0 ) {
+                    @SerializedName("id") var customerId:String = "" ) {
     override fun toString(): String {
         return name
     }
