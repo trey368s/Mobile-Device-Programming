@@ -18,6 +18,9 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
     var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
     var restaurantService : RestaurantService = RestaurantService()
 
+    // New items
+    var orderItems : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
+
     private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
 
     init {

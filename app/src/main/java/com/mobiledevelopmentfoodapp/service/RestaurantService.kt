@@ -14,7 +14,7 @@ interface IRestaurantService {
 
 class RestaurantService : IRestaurantService {
     override suspend fun fetchFoods(): List<Food>?{
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             val service = RetrofitClientInstance.retrofitInstance?.create(IFoodDAO::class.java)
             val foods = async { service?.getAllFoods() }
             return@withContext foods.await()?.awaitResponse()?.body()
