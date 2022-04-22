@@ -4,12 +4,9 @@ package com.mobiledevelopmentfoodapp.dto
 //import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-data class Order(var customerId: String,
-                 var name: String,
-                 var products: ArrayList<Food>,
-                 var totalPrice: Double,
-                 @SerializedName("id") var orderId:Int = 0 ) {
-    override fun toString(): String {
-        return name
-    }
-}
+data class Order(
+    var customerId: String,
+     var products: List<Food>,
+     var totalPrice: Double,
+     @SerializedName("id") var orderId:String = ""
+)

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.ktx.Firebase
 import com.mobiledevelopmentfoodapp.dto.Customer
 import com.mobiledevelopmentfoodapp.dto.Food
 import com.mobiledevelopmentfoodapp.dto.Order
@@ -19,9 +20,8 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
     var customer : Customer? = null;
     var restaurant : MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
     var restaurantService : RestaurantService = RestaurantService()
-
-   var menuItems: MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
-
+    var menuItems: MutableLiveData<List<Food>> = MutableLiveData<List<Food>>()
+    var onSuccess = MutableLiveData<Boolean?>()
     private var firestore : FirebaseFirestore = FirebaseFirestore.getInstance()
 
     init {
@@ -72,6 +72,22 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
 
     }
 
+    fun saveCustomer (customer: Customer) {
+        customer?.let { customer ->
+            val docRef = firestore.collection("Customer").document(customer.customerId)
+            docRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        Log.d("Customer", "Customer ${customer.name} already exists")
+                    } else {
+                        var handle = docRef.set(customer)
+                        handle.addOnSuccessListener { Log.d("Firebase", "Document Saved") }
+                        handle.addOnFailureListener { Log.e("Firebase", "Save failed $it ") }
+                    }
+                }
+        }
+    }
+
     fun fetchRestaurants() {
         viewModelScope.launch {
             var innerRestaurant = restaurantService.fetchFoods()
@@ -86,11 +102,22 @@ class MainViewModel (var RestaurantService : IRestaurantService = RestaurantServ
         handle.addOnFailureListener { Log.e("Firebase","Save failed $it") }
     }
 
-    fun saveOrder(orderList: List<Food>){
-        val document = firestore.collection("Food").document()
-//        food.productId = document.id
-//        val handle = document.set(food)
-//        handle.addOnSuccessListener { Log.d("Firebase","Document saved") }
-//        handle.addOnFailureListener { Log.e("Firebase","Save failed $it") }
+    fun saveOrder(orderList: List<Food>) {
+        customer?.let {
+            val totalPrice = orderList.sumOf { food -> food.price!! }
+            val document = firestore.collection("Order").document()
+            var order: Order = Order(
+                orderId = document.id,
+                products = orderList,
+                totalPrice = totalPrice,
+                customerId = it.customerId
+            )
+            val handle = document.set(order)
+            handle.addOnSuccessListener {
+                Log.d("Firebase","Document saved")
+                onSuccess.value = true
+            }
+            handle.addOnFailureListener { Log.e("Firebase","Save failed $it") }
+        }
     }
 }

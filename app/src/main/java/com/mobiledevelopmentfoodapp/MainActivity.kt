@@ -1,5 +1,7 @@
 package com.mobiledevelopmentfoodapp
 
+
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -22,36 +24,45 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.firestore.auth.User
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.mobiledevelopmentfoodapp.dto.Customer
 import com.mobiledevelopmentfoodapp.dto.Food
 import com.mobiledevelopmentfoodapp.ui.theme.FoodAppTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.NumberFormat
 import java.util.*
 
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel : MainViewModel by viewModel()
-
+    private var firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
         setContent {
+            firebaseUser?.let {
+                val user = Customer(customerId = it.uid, name = it.displayName ?: "")
+                viewModel.customer = user
+                viewModel.listenToOrders()
+            }
             val menuItems by viewModel.menuItems.observeAsState(initial = emptyList())
+            val onSuccess by viewModel.onSuccess.observeAsState(initial = null)
             viewModel.fetchRestaurants()
             val restaurants by viewModel.restaurant.observeAsState(initial= emptyList())
             val foods = ArrayList<Food>()
+            val context = LocalContext.current
             FoodAppTheme {
                 Box (modifier = Modifier
                     .fillMaxSize()
@@ -63,28 +74,58 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Header()
                     }
-                    MainScreen(viewModel, menuItems)
+                    MainScreen(viewModel, menuItems, onSuccess)
                 }
             }
         }
     }
 
+    private fun showToast(context: Context, msg: String = "Your order was success fully entered and will be ready in 20 minutes") {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+        viewModel.onSuccess.value = null
+    }
 
-    private fun getMenuItems(): List<Food> {
-        val menuItems: MutableList<Food> = listOf<Food>().toMutableList()
-        val burger = Food(name = "Hamburger", description = "One tasty burger", price = 8.0, productId = "001")
-        val pizza = Food(name = "Pizza", description = "Large Pepperoni pizza", price = 18.0, productId = "002")
-        val soda = Food(name = "Soda", description = "Tasty beverage", price = 2.0, productId = "003")
-        menuItems.add(burger)
-        menuItems.add(pizza)
-        menuItems.add(soda)
-        return menuItems.toList()
+    private fun signIn() {
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .build()
+        signInLauncher.launch(signInIntent)
+    }
+
+    private val signInLauncher = registerForActivityResult (
+        FirebaseAuthUIActivityResultContract()
+    ) {
+            res -> this.signInResult(res)
+    }
+
+    private fun signInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
+        if (result.resultCode == RESULT_OK) {
+            firebaseUser = FirebaseAuth.getInstance().currentUser
+            firebaseUser?.let {
+                val user = Customer(customerId = it.uid, name = it.displayName ?: "")
+                viewModel.customer = user
+                viewModel.saveCustomer(user)
+                viewModel.listenToOrders()
+            }
+        } else {
+            Log.e("MainActivity.kt", "Login Error: " + response?.error?.errorCode)
+        }
     }
 
     private fun getUUIDs(size: Int) = List(size) { UUID.randomUUID().toString() }
 
+    private fun priceString(price: Double): String {
+        val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US)
+        return currencyFormatter.format(price)
+    }
+
     @Composable
-    fun MainScreen(viewModel: MainViewModel, menuItems: List<Food>) {
+    fun MainScreen(viewModel: MainViewModel, menuItems: List<Food>, onSuccess: Boolean?) {
         val orderList = remember { listOf<Food>().toMutableStateList() }
         Column(
             modifier = Modifier
@@ -101,7 +142,12 @@ class MainActivity : ComponentActivity() {
                 list = orderList,
                 removeFromCart = { item -> orderList.remove(item) }
             )
-            CheckoutButton(orderList = orderList)
+            if (onSuccess == true) {
+                val context = LocalContext.current
+//                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+//                viewModel.onSuccess.value = null
+                showToast(context = context)
+            }
         }
 
     }
@@ -136,7 +182,6 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MenuItem(item: Food, addToCart: (Food) -> Unit) {
-        val currencySymbol = '$'
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -157,7 +202,7 @@ class MainActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "$currencySymbol${item.price}")
+                    Text(text = "${priceString(item.price!!)}")
                     IconButton(onClick = { addToCart(item) }) {
                         Icon(Icons.Filled.Add, contentDescription = "Add Item to Order")
                     }
@@ -190,7 +235,6 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun OrderItem(item: Food, removeFromCart: (Food) -> Unit) {
-        val currencySymbol = '$'
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -206,7 +250,7 @@ class MainActivity : ComponentActivity() {
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "$currencySymbol${item.price}")
+                Text(text = "${priceString(item.price!!)}")
                 IconButton(onClick = { removeFromCart(item) }) {
                     Icon(Icons.Outlined.Delete, contentDescription = "Remove Item from Order")
                 }
@@ -242,7 +286,14 @@ class MainActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text("Order Total:")
-                    Text("\$${totalPrice ?: 0.0}")
+                    Text("${priceString(totalPrice ?: 0.0)}")
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CheckoutButton(list)
                 }
             }
         }
@@ -263,14 +314,18 @@ class MainActivity : ComponentActivity() {
                 if (orderList.isEmpty()) {
                     null
                 } else {
-                    Log.i("order", orderList.toString())
-                    Toast.makeText(context, "User payment", Toast.LENGTH_LONG).show()
+                    if (viewModel.customer == null) {
+                        signIn()
+                    } else {
+                        Log.i("order", orderList.toString())
+                        Toast.makeText(context, "User payment", Toast.LENGTH_LONG).show()
+                    }
                 }
             },
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             backgroundColor = Color.Blue,
         ) {
-            Row(modifier = Modifier.padding(8.dp)) {
+            Row(modifier = Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 if (customer != null) {
                     Text(text = "Checkout", color = Color.White, textAlign = TextAlign.Center)
                 } else {
