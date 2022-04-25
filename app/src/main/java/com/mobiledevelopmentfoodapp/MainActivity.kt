@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,12 +17,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,13 +51,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
         setContent {
-            firebaseUser?.let {
-                val user = Customer(customerId = it.uid, name = it.displayName ?: "")
-                viewModel.customer = user
-                viewModel.listenToOrders()
-            }
             val menuItems by viewModel.menuItems.observeAsState(initial = emptyList())
             val onSuccess by viewModel.onSuccess.observeAsState(initial = null)
+            val customer by viewModel.customer.observeAsState(initial = null)
             viewModel.fetchRestaurants()
             val restaurants by viewModel.restaurant.observeAsState(initial= emptyList())
             val foods = ArrayList<Food>()
@@ -74,15 +69,13 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Header()
                     }
-                    MainScreen(viewModel, menuItems, onSuccess)
+                    MainScreen(viewModel, menuItems, onSuccess, customer)
+                    if (onSuccess == true) {
+                        ShowToast()
+                    }
                 }
             }
         }
-    }
-
-    private fun showToast(context: Context, msg: String = "Your order was success fully entered and will be ready in 20 minutes") {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-        viewModel.onSuccess.value = null
     }
 
     private fun signIn() {
@@ -107,14 +100,20 @@ class MainActivity : ComponentActivity() {
         if (result.resultCode == RESULT_OK) {
             firebaseUser = FirebaseAuth.getInstance().currentUser
             firebaseUser?.let {
-                val user = Customer(customerId = it.uid, name = it.displayName ?: "")
-                viewModel.customer = user
-                viewModel.saveCustomer(user)
+                val customer = Customer(customerId = it.uid, name = it.displayName ?: "")
+                viewModel.customer.value = customer
+                viewModel.saveCustomer()
                 viewModel.listenToOrders()
             }
         } else {
-            Log.e("MainActivity.kt", "Login Error: " + response?.error?.errorCode)
+            Log.e("MainActivity.kt", "Error logging in " + response?.error?.errorCode)
+
         }
+    }
+
+    private fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+        viewModel.customer.value = null
     }
 
     private fun getUUIDs(size: Int) = List(size) { UUID.randomUUID().toString() }
@@ -124,32 +123,49 @@ class MainActivity : ComponentActivity() {
         return currencyFormatter.format(price)
     }
 
-    @Composable
-    fun MainScreen(viewModel: MainViewModel, menuItems: List<Food>, onSuccess: Boolean?) {
-        val orderList = remember { listOf<Food>().toMutableStateList() }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 30.dp)
-        ) {
-            if (menuItems != null) {
-                MenuPanel(
-                    items = menuItems,
-                    addToCart = { item -> orderList.add(item) }
-                )
-            }
-            OrderPanel(
-                list = orderList,
-                removeFromCart = { item -> orderList.remove(item) }
-            )
-            if (onSuccess == true) {
-                val context = LocalContext.current
-//                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-//                viewModel.onSuccess.value = null
-                showToast(context = context)
+    private fun checkout(orderList: List<Food>, context: Context, customer: Customer?, clearOrder: () -> Unit) {
+        if (orderList.isEmpty()) {
+            null
+        } else {
+            if (customer == null) {
+                signIn()
+            } else {
+                viewModel.saveOrder(orderList)
+                clearOrder()
             }
         }
+    }
 
+    @Composable
+    fun MainScreen(viewModel: MainViewModel, menuItems: List<Food>, onSuccess: Boolean?, customer: Customer?) {
+        val orderList = remember { listOf<Food>().toMutableStateList() }
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 30.dp)
+            ) {
+                if (menuItems != null) {
+                    MenuPanel(
+                        items = menuItems,
+                        addToCart = { item -> orderList.add(item) }
+                    )
+                }
+                OrderPanel(
+                    list = orderList,
+                    removeFromCart = { item -> orderList.remove(item) }
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.BottomCenter),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CheckoutButton(orderList = orderList, customer = customer, clearOrder = { orderList.clear() })
+            }
+        }
     }
 
     @Composable
@@ -157,7 +173,7 @@ class MainActivity : ComponentActivity() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 20.dp)
+                .padding(start = 10.dp, end = 10.dp, top = 20.dp, bottom = 5.dp)
                 .background(Color.White)
                 .border(
                     width = 0.5.dp,
@@ -221,14 +237,19 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MenuList(list: List<Food>, addToCart: (Food) -> Unit) {
-        LazyColumn(modifier = Modifier
-            .fillMaxWidth()
-        ) {
-            items(
-                items = list,
-                key = { food -> "${food.name}" }
+        if (list.isEmpty()) {
+            CircularProgressIndicatorSample()
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                food -> MenuItem(item = food, addToCart = { addToCart(food) })
+                items(
+                    items = list,
+                    key = { food -> "${food.name}" }
+                ) { food ->
+                    MenuItem(item = food, addToCart = { addToCart(food) })
+                }
             }
         }
     }
@@ -262,38 +283,36 @@ class MainActivity : ComponentActivity() {
     fun OrderPanel(list: List<Food>, removeFromCart: (Food) -> Unit) {
         val uuids = getUUIDs(size = list.size)
         var totalPrice = list.sumOf { food -> food.price ?: 0.0 }
-        Container {
-            Padding {
-                Text(
-                    if (list.isEmpty()) "You have no items in your order" else "Order Details",
-                    modifier = Modifier.fillMaxWidth()
-                )
-                LazyColumn() {
-                    itemsIndexed(
-                        items = list,
-                        key = { index, food ->
-                            "${food.name}_${uuids[index]}"
+        Column(
+            modifier = Modifier.padding(bottom = 60.dp)
+        ) {
+            Container {
+                Padding {
+                    if (list.isEmpty()) {
+                        Text("You have no items in your order", modifier = Modifier.fillMaxWidth())
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Order Total:")
+                            Text("${priceString(totalPrice ?: 0.0)}")
                         }
-                    ) { _, food ->
-                        OrderItem(
-                            item = food,
-                            removeFromCart = { removeFromCart(food) }
-                        )
                     }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text("Order Total:")
-                    Text("${priceString(totalPrice ?: 0.0)}")
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    CheckoutButton(list)
+                    LazyColumn() {
+                        itemsIndexed(
+                            items = list,
+                            key = { index, food ->
+                                "${food.name}_${uuids[index]}"
+                            }
+                        ) { _, food ->
+                            OrderItem(
+                                item = food,
+                                removeFromCart = { removeFromCart(food) }
+                            )
+                        }
+                    }
+
                 }
             }
         }
@@ -301,38 +320,69 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun Header() {
-        Text(text = "Fast food App", fontSize = 30.sp, textAlign = TextAlign.Center)
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = "Fast food App", fontSize = 30.sp, textAlign = TextAlign.Center)
+            IconButton(onClick = { signOut() }) {
+                Icon(Icons.Filled.ExitToApp , contentDescription = "Sign out")
+            }
+        }
     }
 
     @Composable
-    fun CheckoutButton(orderList: List<Food>) {
+    fun CheckoutButton(orderList: List<Food>, customer: Customer?, clearOrder: () -> Unit) {
         val context = LocalContext.current
-        var customer : Customer? = viewModel.customer
+        val buttonColor = if (orderList.isEmpty()) Color.Gray else Color.Blue
+        val buttonTextColor = if (orderList.isEmpty()) Color.Black else Color.White
+        val buttonText = if (orderList.isEmpty()) "Unavailable" else "Place Order"
 
         FloatingActionButton(
             onClick = {
-                if (orderList.isEmpty()) {
-                    null
-                } else {
-                    if (viewModel.customer == null) {
-                        signIn()
-                    } else {
-                        Log.i("order", orderList.toString())
-                        Toast.makeText(context, "User payment", Toast.LENGTH_LONG).show()
-                    }
-                }
+                checkout(orderList, context, customer, clearOrder)
             },
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            backgroundColor = Color.Blue,
+            backgroundColor = buttonColor,
         ) {
-            Row(modifier = Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 if (customer != null) {
-                    Text(text = "Checkout", color = Color.White, textAlign = TextAlign.Center)
+                    Text(text = buttonText, color = buttonTextColor, textAlign = TextAlign.Center)
                 } else {
-                    Text(text = "Sign in to order", color = Color.White, textAlign = TextAlign.Center)
+                    Text(text = "Sign in to order", color = buttonTextColor, textAlign = TextAlign.Center)
                 }
             }
         }
     }
+
+    @Composable
+    fun ShowToast(msg: String = "Your order was success fully entered and will be ready in 20 minutes") {
+        val context = LocalContext.current
+        Box(modifier = Modifier.fillMaxSize()) {
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+            viewModel.onSuccess.value = null
+        }
+    }
+
+    @Composable
+    fun CircularProgressIndicatorSample() {
+        val progressValue = 0.95f
+        val infiniteTransition = rememberInfiniteTransition()
+
+        val progressAnimationValue by infiniteTransition.animateFloat(
+            initialValue = 0.0f,
+            targetValue = progressValue,animationSpec = infiniteRepeatable(animation = tween(900)))
+
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+            CircularProgressIndicator(progress = progressAnimationValue)
+        }
+    }
+
 }
 
